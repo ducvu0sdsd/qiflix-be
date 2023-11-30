@@ -11,7 +11,9 @@ async function bootstrap() {
 
   // Global validation pipe
   app.useGlobalPipes(new ValidationPipe());
-  app.enableCors();
+  app.enableCors({
+    origin: 'https://qiflix.vercel.app/'
+  });
 
   await app.listen(8080);
 }
