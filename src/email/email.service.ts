@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer/dist';
-import { randomVerifyCode } from 'src/utils';
+import { randomVerifyCode } from '../utils';
 import { JwtService } from '@nestjs/jwt';
 import { EmailVerifyDto } from './dto/email.dto';
 import { Account, StepVerify } from 'src/account/schema/account.schema';
