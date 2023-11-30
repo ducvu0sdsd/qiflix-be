@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AccountDto } from 'src/account/dto/account.dto';
 import { Account } from 'src/account/schema/account.schema';
@@ -17,7 +17,7 @@ export class AuthController {
     ) { }
 
     @Post('sign-in')
-    async signin(@Body() account: AccountDtoSignIn): Promise<{ accessToken: string, refreshToken: string }> {
+    async signin(@Body() account: AccountDtoSignIn): Promise<{ accessToken: string, refreshToken: string, account: Account }> {
         return this.authService.signin(account.email, account.password)
     }
 
@@ -39,5 +39,16 @@ export class AuthController {
     @Put('update-password-by-id/:id')
     async updatePasswordByID(@Param('id') id: string, @Body() { password, verify }: { password: string, verify: string }) {
         return this.accountService.updatePasswordAndAdminByID(id, password, verify)
+    }
+
+    @Get('check-access-token')
+    async checkAccessToken(): Promise<boolean> {
+        return true;
+    }
+
+    @Post('refresh-token')
+    async refreshToken(@Req() req: Request): Promise<{ accessToken: string, refreshToken: string }> {
+        const decodedToken = (req as any).decodedToken;
+        return this.authService.refreshToken(decodedToken)
     }
 }

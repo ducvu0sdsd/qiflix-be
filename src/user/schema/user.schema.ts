@@ -1,4 +1,5 @@
-import { Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { IsArray, IsEnum, IsNotEmpty, IsString } from "class-validator";
 
 interface WatchingInterface {
     movie_id: string
@@ -6,12 +7,41 @@ interface WatchingInterface {
     currentTime: number
 }
 
+export enum Gender {
+    MALE = "male",
+    FEMALE = "female",
+    OTHER = "other"
+}
+
 @Schema({ timestamps: true })
-class User {
+export class User {
+    @Prop()
+    @IsString()
+    @IsNotEmpty()
     name: string
-    gender: string
-    pin: string | undefined
+
+    @Prop()
+    @IsEnum(Gender)
+    @IsNotEmpty()
+    gender: Gender
+
+    @Prop()
+    @IsString()
+    @IsNotEmpty()
+    avatar: string
+
+    @Prop()
+    @IsString()
+    @IsNotEmpty()
+    account_id: string
+
+    @Prop({ type: String, default: null })
+    pin: string | null;
+
+    @Prop({ default: [] })
     watching: WatchingInterface[]
+
+    @Prop({ default: [] })
     liked: string[]
 }
 

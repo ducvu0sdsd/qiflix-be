@@ -10,22 +10,25 @@ export class AuthMiddleware implements NestMiddleware {
     ) { }
 
     async use(req: Request, res: Response, next: NextFunction) {
-        const accessToken = (req.headers as any).authorization?.split(' ')[1]
-        if (!accessToken) {
-            throw new UnauthorizedException("Not Found AccessToken")
+        const type = (req.headers as any).authorization?.split(' ')[0]
+        const token = (req.headers as any).authorization?.split(' ')[1]
+        if (!token) {
+            throw new UnauthorizedException("Not Found token")
         }
 
         try {
-            const decodedToken = this.jwtService.verify(accessToken)
+            const decodedToken = await this.jwtService.verify(token, {
+                secret: type === 'Access' ? process.env.SECRET_KEY : process.env.REFRESH_SECRET_KEY
+            })
             const exp = decodedToken.exp * 1000;
             const currentTimestamp = new Date().getTime()
             if (currentTimestamp > exp) {
-                throw new UnauthorizedException("Access Token has expired")
+                throw new UnauthorizedException(`${type} Token has expired`)
             }
+            (req as any).decodedToken = decodedToken;
             next()
         } catch (error) {
-            console.log(error)
-            throw new UnauthorizedException('Invalid Access Token')
+            throw new UnauthorizedException(`Invalid ${type} Token`)
         }
     }
 }

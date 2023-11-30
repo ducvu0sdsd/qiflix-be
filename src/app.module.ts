@@ -13,6 +13,8 @@ import { MiddlewareConsumer, NestModule } from '@nestjs/common/interfaces'
 import { RequestMethod } from '@nestjs/common/enums'
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EmailModule } from './email/email.module';
+import { UserController } from './user/user.controller';
+import { AccountController } from './account/account.controller';
 
 @Module({
   imports: [
@@ -45,8 +47,15 @@ import { EmailModule } from './email/email.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    // consumer.apply(AuthMiddleware)
-    //   .exclude('/auth/create-verify-code/:email')
-    //   .forRoutes({ path: '/auth/:email', method: RequestMethod.GET })
+    consumer
+      .apply(AuthMiddleware)
+      .exclude('/auths/create-verify-code/:email')
+      .forRoutes(
+        { path: '/auths/:email', method: RequestMethod.GET },
+        { path: '/auths/check-access-token', method: RequestMethod.GET },
+        { path: '/auths/refresh-token', method: RequestMethod.POST },
+        UserController,
+        AccountController
+      )
   }
 }

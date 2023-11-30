@@ -16,7 +16,7 @@ export class AuthService {
         private readonly jwtService: JwtService,
     ) { }
 
-    async signin(email: string, password: string): Promise<{ accessToken: string, refreshToken: string }> {
+    async signin(email: string, password: string): Promise<{ accessToken: string, refreshToken: string, account: Account }> {
         try {
             const account = await this.accountService.findByEmail(email)
             if (account) {
@@ -33,13 +33,34 @@ export class AuthService {
                     })
                     return {
                         accessToken: access_token,
-                        refreshToken: refresh_token
+                        refreshToken: refresh_token,
+                        account: account
                     }
                 } else {
                     throw new UnauthorizedException(`Password doesn't match`);
                 }
             } else {
                 throw new NotFoundException(`Account not found`);
+            }
+        } catch (error) {
+            throw new BadRequestException(`Bad Request: ${error.message}`);
+        }
+    }
+
+    async refreshToken(decodedToken: { admin: boolean, email: string }): Promise<{ accessToken: string, refreshToken: string }> {
+        try {
+            const payload = { email: decodedToken.email, admin: decodedToken.admin }
+            const access_token: string = await this.jwtService.sign(payload, {
+                secret: process.env.SECRET_KEY,
+                expiresIn: process.env.EXPIRES_IN
+            })
+            const refresh_token: string = await this.jwtService.sign(payload, {
+                secret: process.env.REFRESH_SECRET_KEY,
+                expiresIn: process.env.REFRESH_EXPIRES_IN
+            })
+            return {
+                accessToken: access_token,
+                refreshToken: refresh_token
             }
         } catch (error) {
             throw new BadRequestException(`Bad Request: ${error.message}`);
