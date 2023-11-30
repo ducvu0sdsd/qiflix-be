@@ -1,11 +1,11 @@
 import { Body, Controller, Get, Param, Post, Put, Query, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AccountDto } from 'src/account/dto/account.dto';
-import { Account } from 'src/account/schema/account.schema';
-import { AccountDtoSignIn } from 'src/account/dto/accountsignin.dto';
-import { AccountService } from 'src/account/account.service';
-import { EmailService } from 'src/email/email.service';
-import { EmailVerifyDto } from 'src/email/dto/email.dto';
+import { AccountDto } from '../account/dto/account.dto';
+import { Account } from '../account/schema/account.schema';
+import { AccountDtoSignIn } from '../account/dto/accountsignin.dto';
+import { AccountService } from '../account/account.service';
+import { EmailService } from '../email/email.service';
+import { EmailVerifyDto } from '../email/dto/email.dto';
 
 @Controller('auths')
 export class AuthController {
