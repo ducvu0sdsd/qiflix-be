@@ -1,46 +1,60 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export interface CategoryInterface {
-    category_id: string,
-    category_name: string
+    category_id: string;
+    category_name: string;
+}
+
+export interface EpisodeInterface {
+    indexOfEpisode: number;
+    name: string;
+    url: string;
+}
+
+export class Episode {
+    @Prop()
+    numberOfEpisodes: number;
+
+    @Prop({ type: [{ type: 'string' }] })
+    episodes: EpisodeInterface[];
 }
 
 @Schema({
-    timestamps: true
+    timestamps: true,
 })
-
-class Movie {
+export class Movie {
+    @Prop()
+    title: string;
 
     @Prop()
-    title: string
+    description: string;
 
     @Prop()
-    description: string
+    country: string;
+
+    @Prop({ default: [] })
+    genres: string[];
+
+    @Prop({ default: [] })
+    actors: string[];
 
     @Prop()
-    country: string
+    url: string;
 
     @Prop()
-    category: CategoryInterface
+    thumbnail: string;
 
     @Prop()
-    actors: string[]
+    trailerUrl: string;
+
+    @Prop({ default: [] })
+    directors: string[];
 
     @Prop()
-    url: string
+    yearRelease: number;
 
-    @Prop()
-    thumbnail: string
-
-    @Prop()
-    trailerUrl: string
-
-    @Prop()
-    directors: string[]
-
-    @Prop()
-    yearRelease: number
-
+    @Prop({ type: Episode })
+    listEpisode: Episode;
 }
 
-export const MovieSchema = SchemaFactory.createForClass(Movie)
+export const MovieSchema = SchemaFactory.createForClass(Movie);

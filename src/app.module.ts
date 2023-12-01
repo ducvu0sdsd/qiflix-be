@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { MovieModule } from './movie/movie.module';
-import { EpisodeModule } from './episode/episode.module';
 import { CommentModule } from './comment/comment.module';
 import { AccountModule } from './account/account.module';
 import { UserModule } from './user/user.module';
@@ -34,7 +33,6 @@ import { AccountController } from './account/account.controller';
     }),
     MongooseModule.forRoot(process.env.DB_URI),
     MovieModule,
-    EpisodeModule,
     CommentModule,
     AccountModule,
     UserModule,
@@ -50,6 +48,8 @@ export class AppModule implements NestModule {
     consumer
       .apply(AuthMiddleware)
       .exclude('/auths/create-verify-code/:email')
+      .exclude('/accounts/get-by-email/:email')
+      .exclude({ path: '/genres', method: RequestMethod.ALL })
       .forRoutes(
         { path: '/auths/:email', method: RequestMethod.GET },
         { path: '/auths/check-access-token', method: RequestMethod.GET },
