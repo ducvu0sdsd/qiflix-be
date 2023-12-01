@@ -7,12 +7,14 @@ import { NextFunction } from 'express';
 
 async function bootstrap() {
   dotenv.config();
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
 
   // Global validation pipe
   app.useGlobalPipes(new ValidationPipe());
+
+
   app.enableCors({
-    origin: 'https://qiflix.vercel.app/'
+    origin: 'http://localhost:3000'
   });
 
   await app.listen(8080);
