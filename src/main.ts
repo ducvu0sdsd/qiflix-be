@@ -12,15 +12,11 @@ async function bootstrap() {
   // Global validation pipe
   app.useGlobalPipes(new ValidationPipe());
 
-  const options = {
-    "origin": "http://localhost:3000",
-    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-    "preflightContinue": false,
-    "optionsSuccessStatus": 204,
-    "credentials": true
-  }
-  //app.use(cors(options))
-  app.enableCors(options)
+  app.enableCors({
+    origin: "http://localhost:3000",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    allowedHeaders: "Content-Type, Accept",
+  });
 
   await app.listen(8080);
 }
