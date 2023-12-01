@@ -12,11 +12,22 @@ async function bootstrap() {
   // Global validation pipe
   app.useGlobalPipes(new ValidationPipe());
 
-  app.enableCors({
-    origin: "http://localhost:3000",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    allowedHeaders: "Content-Type, Accept",
-  });
+  const allowedOrigins = [
+    'http://localhost:3000'
+  ];
+
+  // Reflect the origin if it's in the allowed list or not defined (cURL, Postman, etc.)
+  const corsOptions = {
+    origin: (origin, callback) => {
+      if (allowedOrigins.includes(origin) || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error('Origin not allowed by CORS'));
+      }
+    }
+  }
+
+  app.enableCors({ ...corsOptions });
 
   await app.listen(8080);
 }
