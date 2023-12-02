@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { IsArray, IsEnum, IsNotEmpty, IsString } from "class-validator";
 
-interface WatchingInterface {
+export interface WatchingInterface {
     movie_id: string
     indexOfEpisode: number
     currentTime: number

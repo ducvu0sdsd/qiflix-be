@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserCreateDto } from './dto/user-create.dto';
-import { User } from './schema/user.schema';
+import { User, WatchingInterface } from './schema/user.schema';
 
 @Controller('users')
 export class UserController {
@@ -23,5 +23,10 @@ export class UserController {
     @Delete(':id')
     async delete(@Param('id') id: string): Promise<User> {
         return this.userService.delete(id)
+    }
+
+    @Put('update-watching/:id')
+    async updateWatching(@Param('id') id: string, @Body() watching: WatchingInterface): Promise<void> {
+        return this.userService.updateWatching(id, watching)
     }
 }

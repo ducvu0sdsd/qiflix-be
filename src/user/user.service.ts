@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { User } from './schema/user.schema';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { User, WatchingInterface } from './schema/user.schema';
 import { UserCreateDto } from './dto/user-create.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 
 @Injectable()
 export class UserService {
@@ -24,5 +25,21 @@ export class UserService {
         return await this.userSchema.findByIdAndDelete(id, {
             new: false
         })
+    }
+
+    async updateWatching(id: string, watching: WatchingInterface): Promise<void> {
+        const user = await this.userSchema.findById(id)
+        if (user) {
+            const watchingFilter = user.watching.filter(item => item.movie_id === watching.movie_id)[0]
+            if (watchingFilter) {
+                watchingFilter.indexOfEpisode = watching.indexOfEpisode
+                watchingFilter.currentTime = watching.currentTime
+            } else {
+                user.watching.push(watching)
+            }
+            await this.userSchema.findByIdAndUpdate(id, { watching: user.watching })
+        } else {
+            throw new UnauthorizedException('Not Found User')
+        }
     }
 }

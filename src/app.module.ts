@@ -49,7 +49,7 @@ export class AppModule implements NestModule {
       .apply(AuthMiddleware)
       .exclude('/auths/create-verify-code/:email')
       .exclude('/accounts/get-by-email/:email')
-      .exclude({ path: '/genres', method: RequestMethod.ALL })
+      .exclude('/users/update-watching/:id')
       .forRoutes(
         { path: '/auths/:email', method: RequestMethod.GET },
         { path: '/auths/check-access-token', method: RequestMethod.GET },
