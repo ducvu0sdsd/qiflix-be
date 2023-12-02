@@ -41,4 +41,7 @@ export class MovieDto {
     readonly yearRelease: number
 
     readonly listEpisode: Episode
+
+    @IsNotEmpty()
+    readonly belong: string[]
 }

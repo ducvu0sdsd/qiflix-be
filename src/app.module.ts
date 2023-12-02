@@ -14,6 +14,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { EmailModule } from './email/email.module';
 import { UserController } from './user/user.controller';
 import { AccountController } from './account/account.controller';
+import { MovieController } from './movie/movie.controller';
 
 @Module({
   imports: [
@@ -55,7 +56,8 @@ export class AppModule implements NestModule {
         { path: '/auths/check-access-token', method: RequestMethod.GET },
         { path: '/auths/refresh-token', method: RequestMethod.POST },
         UserController,
-        AccountController
+        AccountController,
+        MovieController
       )
   }
 }

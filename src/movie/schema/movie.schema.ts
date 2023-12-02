@@ -55,6 +55,9 @@ export class Movie {
 
     @Prop({ type: Episode })
     listEpisode: Episode;
+
+    @Prop({ default: [] })
+    belong: string[];
 }
 
 export const MovieSchema = SchemaFactory.createForClass(Movie);
