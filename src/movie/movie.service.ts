@@ -42,4 +42,20 @@ export class MovieService {
         })
         return res;
     }
+
+    async getMoviesLikedByUserId(id: string): Promise<Movie[]> {
+        const aggregatePipeline = [
+            { $match: { _id: new Types.ObjectId(id) } },
+            { $unwind: '$liked' },
+            { $addFields: { movieLiked: { $toObjectId: '$liked' } } },
+            { $lookup: { from: 'movies', localField: 'movieLiked', foreignField: '_id', as: 'movie' } },
+            { $unwind: '$movie' },
+            { $group: { _id: '$_id', movies: { $push: '$movie' } } },
+            { $project: { _id: 0 } },
+            { $unwind: "$movies" },
+            { $replaceRoot: { newRoot: '$movies' } }]
+
+        const movies: Movie[] = await this.userSchema.aggregate(aggregatePipeline).exec()
+        return movies
+    }
 }

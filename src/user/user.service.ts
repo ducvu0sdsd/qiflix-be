@@ -27,6 +27,31 @@ export class UserService {
         })
     }
 
+    async addLiked(id: string, movie_id: string): Promise<User> {
+        const user = await this.userSchema.findById(id)
+        if (user) {
+            const isLiked = user.liked.includes(movie_id)
+            if (!isLiked) {
+                user.liked.unshift(movie_id)
+            }
+            const res = this.userSchema.findByIdAndUpdate(id, { liked: user.liked }, { new: true })
+            return res
+        } else {
+            throw new UnauthorizedException('Not Found User')
+        }
+    }
+
+    async removeLiked(id: string, movie_id: string): Promise<User> {
+        const user = await this.userSchema.findById(id)
+        if (user) {
+            const liked = user.liked.filter(item => item !== movie_id)
+            const res = this.userSchema.findByIdAndUpdate(id, { liked }, { new: true })
+            return res
+        } else {
+            throw new UnauthorizedException('Not Found User')
+        }
+    }
+
     async updateWatching(id: string, watching: WatchingInterface): Promise<void> {
         const user = await this.userSchema.findById(id)
         if (user) {

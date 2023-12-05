@@ -29,4 +29,14 @@ export class UserController {
     async updateWatching(@Param('id') id: string, @Body() watching: WatchingInterface): Promise<void> {
         return this.userService.updateWatching(id, watching)
     }
+
+    @Put('add-liked/:id')
+    async addLiked(@Param("id") id: string, @Body() { movie_id }: { movie_id: string }): Promise<User> {
+        return this.userService.addLiked(id, movie_id)
+    }
+
+    @Put('remove-liked/:id')
+    async removeLiked(@Param("id") id: string, @Body() { movie_id }: { movie_id: string }): Promise<User> {
+        return this.userService.removeLiked(id, movie_id)
+    }
 }

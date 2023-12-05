@@ -36,4 +36,9 @@ export class MovieController {
     async getMoviesWatchingByUser(@Param('id') id: string): Promise<MovieWatchingByUserId[]> {
         return this.movieService.getMoviesWatchingByUserId(id)
     }
+
+    @Get('get-movies-liked-by-user/:id')
+    async getMoviesLinkedByUser(@Param('id') id: string): Promise<Movie[]> {
+        return this.movieService.getMoviesLikedByUserId(id)
+    }
 }
