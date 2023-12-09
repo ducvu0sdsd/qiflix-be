@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
 
 @Schema({ timestamps: true })
-class Comment {
+export class Comment {
 
     @Prop()
     movie_id: string
