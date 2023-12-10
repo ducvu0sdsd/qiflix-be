@@ -27,7 +27,7 @@ export const handleSRTFile: (str: string) => SubtitleItemInterface[] = (str) => 
                     subtitle.lastTime = last
                 }
             })
-        } else if (/[A-ZÀ-Ỹa-zà-ỹ0-9]+/.test(item) && !item.includes(' --> ')) {
+        } else if (/[A-ZÀ-Ỹa-zà-ỹ0-9]+/.test(item.replace('- ', '')) && !item.includes(' --> ')) {
             subtitle.content += (' ' + item.replace('\r', '').replace('<i>', '').replace('</i>', ''))
         } else if (item === '\r') {
             console.log(subtitle)
