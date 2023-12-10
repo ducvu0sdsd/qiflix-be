@@ -16,6 +16,8 @@ import { UserController } from './user/user.controller';
 import { AccountController } from './account/account.controller';
 import { MovieController } from './movie/movie.controller';
 import { CommentController } from './comment/comment.controller';
+import { SubtitleModule } from './subtitle/subtitle.module';
+import { SubtitleController } from './subtitle/subtitle.controller';
 
 @Module({
   imports: [
@@ -43,6 +45,7 @@ import { CommentController } from './comment/comment.controller';
       secret: process.env.SECRET_KEY || process.env.REFRESH_SECRET_KEY || process.env.VERIFY_SERECT_KEY,
     }),
     EmailModule,
+    SubtitleModule,
   ],
 })
 export class AppModule implements NestModule {
@@ -57,6 +60,7 @@ export class AppModule implements NestModule {
         { path: '/auths/check-access-token', method: RequestMethod.GET },
         { path: '/auths/refresh-token', method: RequestMethod.POST },
         { path: '/accounts/get-by-email', method: RequestMethod.GET },
+        SubtitleController,
         CommentController,
         UserController,
         MovieController
