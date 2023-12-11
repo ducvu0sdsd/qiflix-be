@@ -36,13 +36,13 @@ export class MovieService {
         const aggregationPipeline = [{ $match: { _id: new Types.ObjectId(id) } }, { $unwind: '$watching' }, { $addFields: { movieObjectId: { $toObjectId: '$watching.movie_id' } } }, { $lookup: { from: 'movies', localField: 'movieObjectId', foreignField: '_id', as: 'movie' } }, { $unwind: '$movie' }, { $addFields: { watching: { $mergeObjects: ['$watching', '$movie'] } } }, { $group: { _id: '$_id', moviesWatching: { $push: '$watching' } } }, { $project: { _id: 0 } }, { $unwind: '$moviesWatching' }, { $replaceRoot: { newRoot: '$moviesWatching' } }, { $project: { movie_id: 0 } }];
         let res = await this.userSchema.aggregate(aggregationPipeline).exec();
         res = res.map(item => {
-            const { indexOfEpisode, currentTime, ...movie } = item
-            const movie_item: MovieWatchingByUserId = { indexOfEpisode, currentTime, movie: movie }
+            const { indexOfEpisode, currentTime, process, ...movie } = item
+            const movie_item: MovieWatchingByUserId = { indexOfEpisode, currentTime, process: process ? process : 0, movie: movie }
             return movie_item
         })
         return res;
     }
-
+    // ObjectId("656b0f53f857a7f173d3b18d")
     async getMoviesLikedByUserId(id: string): Promise<Movie[]> {
         const aggregatePipeline = [
             { $match: { _id: new Types.ObjectId(id) } },

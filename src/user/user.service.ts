@@ -52,17 +52,30 @@ export class UserService {
         }
     }
 
-    async updateWatching(id: string, watching: WatchingInterface): Promise<void> {
+    async updateWatching(id: string, watching: WatchingInterface): Promise<User> {
         const user = await this.userSchema.findById(id)
         if (user) {
             const watchingFilter = user.watching.filter(item => item.movie_id === watching.movie_id)[0]
+            const watchings = user.watching.filter(item => item.movie_id !== watching.movie_id)
             if (watchingFilter) {
                 watchingFilter.indexOfEpisode = watching.indexOfEpisode
                 watchingFilter.currentTime = watching.currentTime
+                watchingFilter.process = watching.process
+                watchings.unshift(watchingFilter)
             } else {
-                user.watching.push(watching)
+                watchings.unshift(watching)
             }
-            await this.userSchema.findByIdAndUpdate(id, { watching: user.watching })
+            return await this.userSchema.findByIdAndUpdate(id, { watching: watchings })
+        } else {
+            throw new UnauthorizedException('Not Found User')
+        }
+    }
+
+    async deleteWatching(id: string, watching: WatchingInterface): Promise<void> {
+        const user = await this.userSchema.findById(id)
+        if (user) {
+            const watchingFilter = user.watching.filter(item => item.movie_id !== watching.movie_id)
+            await this.userSchema.findByIdAndUpdate(id, { watching: watchingFilter })
         } else {
             throw new UnauthorizedException('Not Found User')
         }

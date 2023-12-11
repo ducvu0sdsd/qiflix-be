@@ -26,8 +26,13 @@ export class UserController {
     }
 
     @Put('update-watching/:id')
-    async updateWatching(@Param('id') id: string, @Body() watching: WatchingInterface): Promise<void> {
+    async updateWatching(@Param('id') id: string, @Body() watching: WatchingInterface): Promise<User> {
         return this.userService.updateWatching(id, watching)
+    }
+
+    @Put('delete-watching/:id')
+    async deleteWatching(@Param('id') id: string, @Body() watching: WatchingInterface): Promise<void> {
+        return this.userService.deleteWatching(id, watching)
     }
 
     @Put('add-liked/:id')

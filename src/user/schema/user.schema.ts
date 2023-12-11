@@ -5,6 +5,7 @@ export interface WatchingInterface {
     movie_id: string
     indexOfEpisode: number
     currentTime: number
+    process?: number
 }
 
 export enum Gender {
