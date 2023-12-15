@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { MovieDto } from './dto/movie.dto';
 import { Movie } from './schema/movie.schema';
@@ -40,5 +40,10 @@ export class MovieController {
     @Get('get-movies-liked-by-user/:id')
     async getMoviesLinkedByUser(@Param('id') id: string): Promise<Movie[]> {
         return this.movieService.getMoviesLikedByUserId(id)
+    }
+
+    @Get('get-movies-by-country-and-name')
+    async getMoviesByCountryAndName(@Query('country') country : string, @Query('name') name : string) : Promise<Movie[]> {
+        return this.movieService.getMoviesByCountryAndName(country, name)
     }
 }

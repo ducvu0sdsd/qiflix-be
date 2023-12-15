@@ -15,6 +15,11 @@ export class UserController {
         return await this.userService.create(user)
     }
 
+    @Put(':id')
+    async update(@Body() userDto: UserCreateDto, @Param('id') id : string): Promise<User> {
+        return await this.userService.update(userDto, id)
+    }
+
     @Get(':id')
     async getAllByAccountID(@Param('id') id: string): Promise<User[]> {
         return await this.userService.getAllByUserID(id)

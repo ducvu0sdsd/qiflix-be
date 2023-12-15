@@ -80,4 +80,8 @@ export class UserService {
             throw new UnauthorizedException('Not Found User')
         }
     }
+
+    async update(userDto : UserCreateDto, id : string): Promise<User> {
+        return await this.userSchema.findByIdAndUpdate(id, userDto)
+    }
 }

@@ -58,4 +58,49 @@ export class MovieService {
         const movies: Movie[] = await this.userSchema.aggregate(aggregatePipeline).exec()
         return movies
     }
+
+    async getMoviesByCountryAndName(country : string, name : string) : Promise<Movie[]> {
+        let aggregatePipeline = [{}]
+        const movies: Movie[] = await this.movieSchema.find()
+        const results = []
+        if (name === '' && country === 'Country') {
+            return movies
+        }
+        movies.forEach(movie => {
+            const title = movie.title.toLowerCase()
+                .replaceAll('-', '')
+                .replaceAll("'", '')
+                .replaceAll(',', '')
+                .replaceAll('_', '')
+                .replaceAll(' ', '')
+                .replaceAll(';', '')
+                .replaceAll(':', '')
+                .replaceAll('"', '')
+                .replaceAll('?', '')
+            const titleInput = name.toLowerCase()
+                .replaceAll('-', '')
+                .replaceAll("'", '')
+                .replaceAll(',', '')
+                .replaceAll('_', '')
+                .replaceAll(' ', '')
+                .replaceAll(';', '')
+                .replaceAll(':', '')
+                .replaceAll('"', '')
+                .replaceAll('?', '')
+            if (name !== '' && country !== 'Country') {
+                if (title.includes(titleInput) && movie.country === country) {
+                    results.push(movie)
+                }
+            } else if (name === '' && country !== 'Country') {
+                if (movie.country === country) {
+                    results.push(movie)
+                }
+            } else if (name !== '' && country === 'Country') {
+                if (title.includes(titleInput)) {
+                    results.push(movie)
+                }
+            }
+        })
+        return results;
+    }
 }
