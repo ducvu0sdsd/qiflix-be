@@ -25,6 +25,9 @@ export class SubtitleService {
                 episodeNumber = parseInt(episode)
             }
             const result: Subtitle = { subtitles, country, movie_id, episode: episodeNumber }
+            if (result.subtitles.length === 0) {
+                throw new UnauthorizedException("Fail")
+            }
             const res = await this.subtitleSchema.create(result)
             return res
         } catch (error) {
