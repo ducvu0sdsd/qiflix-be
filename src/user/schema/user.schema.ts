@@ -36,8 +36,8 @@ export class User {
     @IsNotEmpty()
     account_id: string
 
-    @Prop({ type: String, default: null })
-    pin: string | null;
+    @Prop({ type: String, default: '' })
+    pin: string | '';
 
     @Prop({ default: [] })
     watching: WatchingInterface[]

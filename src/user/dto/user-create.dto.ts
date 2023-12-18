@@ -17,5 +17,5 @@ export class UserCreateDto {
     @IsString()
     readonly avatar: string
 
-    readonly pin: string | undefined
+    readonly pin: string | ''
 }

@@ -81,7 +81,7 @@ export class UserService {
         }
     }
 
-    async update(userDto : UserCreateDto, id : string): Promise<User> {
-        return await this.userSchema.findByIdAndUpdate(id, userDto)
+    async update(userDto: UserCreateDto, id: string): Promise<User> {
+        return await this.userSchema.findByIdAndUpdate(id, userDto, { new: true })
     }
 }
