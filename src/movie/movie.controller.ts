@@ -13,7 +13,6 @@ export class MovieController {
 
     @Post()
     async create(@Body() movie: MovieDto): Promise<Movie> {
-        console.log(movie)
         return this.movieService.create(movie)
     }
 
@@ -43,7 +42,7 @@ export class MovieController {
     }
 
     @Get('get-movies-by-country-and-name')
-    async getMoviesByCountryAndName(@Query('country') country : string, @Query('name') name : string) : Promise<Movie[]> {
+    async getMoviesByCountryAndName(@Query('country') country: string, @Query('name') name: string): Promise<Movie[]> {
         return this.movieService.getMoviesByCountryAndName(country, name)
     }
 }

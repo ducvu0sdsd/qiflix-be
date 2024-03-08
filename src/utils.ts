@@ -13,8 +13,6 @@ export const handleSRTFile: (str: string) => SubtitleItemInterface[] = (str) => 
     let subtitle: SubtitleItemInterface = { id: 0, firstTime: 0, lastTime: 0, content: '' }
     arr.forEach((item1, index) => {
         const item = item1
-        // .replaceAll('[', '') asdd
-        // .replaceAll(']', '')
         if (/[0-9]{1,6}\r/.test(item) && !item.includes(' --> ')) { // id
             const i = parseInt(item.replace('\r', ''))
             subtitle.id = i
