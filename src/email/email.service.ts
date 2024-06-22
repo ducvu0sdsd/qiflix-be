@@ -8,7 +8,7 @@ import { AccountService } from 'src/account/account.service';
 
 interface VerificationQueueInterface {
     email: string,
-    code_token: string
+    verifyCode: string
 }
 
 @Injectable()
@@ -27,36 +27,33 @@ export class EmailService {
         if (account) {
             return true;
         }
-        const verifyCode = randomVerifyCode()
-        const token = this.jwtService.sign(
-            { verifyCode: verifyCode },
-            { secret: process.env.VERIFY_SERECT_KEY, expiresIn: process.env.VERIFY_EXPIRES_IN }
-        )
         const emailExist = EmailService.VERIFICATION_QUEUE.filter(item => item.email === email)[0]
-        if (emailExist) {
-            EmailService.VERIFICATION_QUEUE = EmailService.VERIFICATION_QUEUE.filter(item => item.email !== email)
+        if (!emailExist) {
+            const verifyCode = randomVerifyCode()
+            EmailService.VERIFICATION_QUEUE.push({ email: email, verifyCode })
+            this.mailerService.sendMail({
+                to: email,
+                from: 'truongminh1212zs@gmail.com',
+                subject: "Verify Code Qiflix",
+                text: "Verify Code Qiflix",
+                html: `<b>Verify Code Qiflix : ${verifyCode}</b>`
+            })
+        } else {
+            this.mailerService.sendMail({
+                to: email,
+                from: 'truongminh1212zs@gmail.com',
+                subject: "Verify Code Qiflix",
+                text: "Verify Code Qiflix",
+                html: `<b>Verify Code Qiflix : ${emailExist.verifyCode}</b>`
+            })
         }
-        EmailService.VERIFICATION_QUEUE.push({ email: email, code_token: token })
-        this.mailerService.sendMail({
-            to: email,
-            from: 'truongminh1212zs@gmail.com',
-            subject: "Verify Code Qiflix",
-            text: "Verify Code Qiflix",
-            html: `<b>Verify Code Qiflix : ${verifyCode}</b>`
-        })
         return true;
     }
 
     async confirmVerifyCode(emailVerify: EmailVerifyDto): Promise<Account> {
         const email = EmailService.VERIFICATION_QUEUE.filter(item => item.email === emailVerify.email)[0]
         if (email) {
-            const decodedToken = this.jwtService.verify(email.code_token, { secret: process.env.VERIFY_SERECT_KEY })
-            const exp = decodedToken.exp * 1000;
-            const currentTimestamp = new Date().getTime()
-            if (currentTimestamp > exp) {
-                throw new UnauthorizedException("Verify Code has expired")
-            }
-            if (emailVerify.verifyCode === decodedToken.verifyCode) {
+            if (emailVerify.verifyCode === email.verifyCode) {
                 const account: Account = await this.accountService.createAccount(email.email, StepVerify.STEP_2)
                 EmailService.VERIFICATION_QUEUE = EmailService.VERIFICATION_QUEUE.filter(item => item.email !== email.email)
                 return account
