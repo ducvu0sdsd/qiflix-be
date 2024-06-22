@@ -45,6 +45,9 @@ export class Movie {
     thumbnail: string;
 
     @Prop()
+    thumbnailVertical: string;
+
+    @Prop()
     trailerUrl: string;
 
     @Prop({ default: [] })
