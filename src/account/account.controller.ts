@@ -1,6 +1,7 @@
-import { Controller, Get, Param, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put, Req } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { Account } from './schema/account.schema';
+import { AccountDto } from './dto/account.dto';
 
 @Controller('accounts')
 export class AccountController {
@@ -18,5 +19,10 @@ export class AccountController {
     async getByEmail(@Req() req: Request): Promise<Account> {
         const decodedToken = (req as any).decodedToken;
         return this.accountService.findByEmail(decodedToken.email)
+    }
+
+    @Put(':id')
+    async updateAccount(@Param('id') id: string, @Body() account: AccountDto): Promise<Account> {
+        return this.accountService.updateAccount(id, account)
     }
 }

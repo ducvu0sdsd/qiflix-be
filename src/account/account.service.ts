@@ -17,6 +17,10 @@ export class AccountService {
         return this.accountSchema.findOne({ email })
     }
 
+    async updateAccount(id: string, account: AccountDto): Promise<Account> {
+        return await this.accountSchema.findByIdAndUpdate(id, account, { new: true })
+    }
+
     async createAccount(email: string, verify: StepVerify): Promise<Account> {
         const account = new Account()
         account.email = email
