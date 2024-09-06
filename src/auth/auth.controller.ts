@@ -49,6 +49,7 @@ export class AuthController {
     @Post('refresh-token')
     async refreshToken(@Req() req: Request): Promise<{ accessToken: string, refreshToken: string }> {
         const decodedToken = (req as any).decodedToken;
-        return this.authService.refreshToken(decodedToken)
+        const tokens = this.authService.refreshToken(decodedToken)
+        return tokens
     }
 }

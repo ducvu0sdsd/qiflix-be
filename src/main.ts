@@ -13,8 +13,9 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   app.enableCors({
-    origin: 'https://www.qiflix.cloud',
-    // origin: 'http://localhost:3000',
+    // origin: 'https://www.qiflix.cloud', 
+    // origin: 'http://localhost:8081',
+    origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     allowedHeaders: 'Content-Type, Authorization',
