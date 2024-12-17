@@ -14,7 +14,7 @@ export class SubtitleController {
     @Post()
     @UseInterceptors(FileInterceptor('srtFile'))
     async insert(@UploadedFile() srtFile: Express.Multer.File, @Body() body: { movie_id: string, country: string, episode?: string }): Promise<Subtitle> {
-        const res = await this.subtitleService.insert(srtFile, body.movie_id, body.country)
+        const res = await this.subtitleService.insert(srtFile, body.movie_id, body.country, body.episode)
         return res
     }
 
