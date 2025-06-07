@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { MovieDto } from './dto/movie.dto';
 import { Movie } from './schema/movie.schema';
@@ -6,43 +15,53 @@ import { MovieWatchingByUserId } from './dto/movie-watching-by-user.dto';
 
 @Controller('movies')
 export class MovieController {
+  constructor(private movieService: MovieService) {}
 
-    constructor(
-        private movieService: MovieService
-    ) { }
+  @Post()
+  async create(@Body() movie: MovieDto): Promise<Movie> {
+    return this.movieService.create(movie);
+  }
 
-    @Post()
-    async create(@Body() movie: MovieDto): Promise<Movie> {
-        return this.movieService.create(movie)
-    }
+  @Get()
+  async getAll(): Promise<Movie[]> {
+    return this.movieService.getAll();
+  }
 
-    @Get()
-    async getAll(): Promise<Movie[]> {
-        return this.movieService.getAll()
-    }
+  @Get(':slug')
+  async getbySlug(@Param('slug') slug: string): Promise<Movie> {
+    return this.movieService.getBySlug(slug);
+  }
 
-    @Put(":id")
-    async update(@Param("id") id: string, @Body() movie: MovieDto): Promise<Movie> {
-        return this.movieService.update(id, movie)
-    }
+  @Put(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() movie: MovieDto,
+  ): Promise<Movie> {
+    return this.movieService.update(id, movie);
+  }
 
-    @Delete(':id')
-    async delete(@Param('id') id: string): Promise<Movie> {
-        return this.movieService.delete(id)
-    }
+  @Delete(':id')
+  async delete(@Param('id') id: string): Promise<Movie> {
+    return this.movieService.delete(id);
+  }
 
-    @Get('get-movies-watching-by-user/:id')
-    async getMoviesWatchingByUser(@Param('id') id: string): Promise<MovieWatchingByUserId[]> {
-        return this.movieService.getMoviesWatchingByUserId(id)
-    }
+  @Get('get-movies-watching-by-user/:id')
+  async getMoviesWatchingByUser(
+    @Param('id') id: string,
+  ): Promise<MovieWatchingByUserId[]> {
+    return this.movieService.getMoviesWatchingByUserId(id);
+  }
 
-    @Get('get-movies-liked-by-user/:id')
-    async getMoviesLinkedByUser(@Param('id') id: string): Promise<Movie[]> {
-        return this.movieService.getMoviesLikedByUserId(id)
-    }
+  @Get('get-movies-liked-by-user/:id')
+  async getMoviesLinkedByUser(@Param('id') id: string): Promise<Movie[]> {
+    return this.movieService.getMoviesLikedByUserId(id);
+  }
 
-    @Get('get-movies-by-country-and-name')
-    async getMoviesByCountryAndName(@Query('country') country: string, @Query('name') name: string): Promise<Movie[]> {
-        return this.movieService.getMoviesByCountryAndName(country, name)
-    }
+  @Get('get-movies-by-country-and-name')
+  async getMoviesByCountryAndName(
+    @Query('country') country: string,
+    @Query('name') name: string,
+  ): Promise<Movie[]> {
+    return this.movieService.getMoviesByCountryAndName(country, name);
+  }
 }
