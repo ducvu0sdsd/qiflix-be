@@ -50,20 +50,6 @@ import { SubtitleController } from './subtitle/subtitle.controller';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AuthMiddleware)
-      .exclude('/auths/create-verify-code/:email')
-      .exclude('/accounts/get-by-email/:email')
-      .exclude('/movies/get-movies-liked-by-user/:id')
-      .forRoutes(
-        { path: '/auths/:email', method: RequestMethod.GET },
-        { path: '/auths/check-access-token', method: RequestMethod.GET },
-        { path: '/auths/refresh-token', method: RequestMethod.POST },
-        { path: '/accounts/get-by-email', method: RequestMethod.GET },
-        SubtitleController,
-        CommentController,
-        UserController,
-        MovieController
-      )
+    
   }
 }
