@@ -8,12 +8,14 @@ import bodyParser from 'body-parser';
 
 async function bootstrap() {
   dotenv.config();
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    cors: true,
+  });
 
   app.useGlobalPipes(new ValidationPipe());
 
   app.enableCors({
-    // origin: 'https://www.qiflix.cloud', 
+    // origin: 'https://www.qiflix.cloud',
     // origin: 'http://localhost:8081',
     origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -25,7 +27,7 @@ async function bootstrap() {
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
-  await app.listen(8080);
+  await app.listen(8081);
 }
 
 bootstrap();

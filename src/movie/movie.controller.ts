@@ -57,11 +57,10 @@ export class MovieController {
     return this.movieService.getMoviesLikedByUserId(id);
   }
 
-  @Get('get-movies-by-country-and-name')
+  @Get('get-movies-by-name/:name')
   async getMoviesByCountryAndName(
-    @Query('country') country: string,
-    @Query('name') name: string,
+    @Param('name') name: string,
   ): Promise<Movie[]> {
-    return this.movieService.getMoviesByCountryAndName(country, name);
+    return this.movieService.getMoviesByName(name);
   }
 }

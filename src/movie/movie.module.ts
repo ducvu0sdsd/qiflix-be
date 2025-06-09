@@ -6,8 +6,11 @@ import { MovieSchema } from './schema/movie.schema';
 import { UserSchema } from 'src/user/schema/user.schema';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: 'Movie', schema: MovieSchema }]), MongooseModule.forFeature([{ name: "User", schema: UserSchema }])],
+  imports: [
+    MongooseModule.forFeature([{ name: 'Movie', schema: MovieSchema }]),
+    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
+  ],
   controllers: [MovieController],
-  providers: [MovieService]
+  providers: [MovieService],
 })
-export class MovieModule { }
+export class MovieModule {}

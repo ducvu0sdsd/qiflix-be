@@ -37,7 +37,6 @@ export class MovieService {
   async getMoviesWatchingByUserId(
     id: string,
   ): Promise<MovieWatchingByUserId[]> {
-    const movies: MovieWatchingByUserId[] = [];
     const aggregationPipeline = [
       { $match: { _id: new Types.ObjectId(id) } },
       { $unwind: '$watching' },
@@ -98,53 +97,22 @@ export class MovieService {
     return movies;
   }
 
-  async getMoviesByCountryAndName(
-    country: string,
-    name: string,
-  ): Promise<Movie[]> {
-    let aggregatePipeline = [{}];
+  async getMoviesByName(name: string): Promise<Movie[]> {
+    const normalize = (str: string): string =>
+      str.toLowerCase().replace(/[-'_,;:"? ]/g, '');
+
     const movies: Movie[] = await this.movieSchema.find();
-    const results = [];
-    if (name === '' && country === 'Country') {
+    const isEmptyName = name.trim() === '';
+
+    if (isEmptyName) {
       return movies;
     }
-    movies.forEach((movie) => {
-      const title = movie.title
-        .toLowerCase()
-        .replaceAll('-', '')
-        .replaceAll("'", '')
-        .replaceAll(',', '')
-        .replaceAll('_', '')
-        .replaceAll(' ', '')
-        .replaceAll(';', '')
-        .replaceAll(':', '')
-        .replaceAll('"', '')
-        .replaceAll('?', '');
-      const titleInput = name
-        .toLowerCase()
-        .replaceAll('-', '')
-        .replaceAll("'", '')
-        .replaceAll(',', '')
-        .replaceAll('_', '')
-        .replaceAll(' ', '')
-        .replaceAll(';', '')
-        .replaceAll(':', '')
-        .replaceAll('"', '')
-        .replaceAll('?', '');
-      if (name !== '' && country !== 'Country') {
-        if (title.includes(titleInput) && movie.country === country) {
-          results.push(movie);
-        }
-      } else if (name === '' && country !== 'Country') {
-        if (movie.country === country) {
-          results.push(movie);
-        }
-      } else if (name !== '' && country === 'Country') {
-        if (title.includes(titleInput)) {
-          results.push(movie);
-        }
-      }
+
+    const normalizedInput = normalize(name);
+
+    return movies.filter((movie) => {
+      const normalizedTitle = normalize(movie.title);
+      return normalizedTitle.includes(normalizedInput);
     });
-    return results;
   }
 }
