@@ -5,7 +5,6 @@ import {
   Get,
   Param,
   Post,
-  Put,
   Query,
 } from '@nestjs/common';
 import { MovieService } from './movie.service';
@@ -18,8 +17,8 @@ export class MovieController {
   constructor(private movieService: MovieService) {}
 
   @Post()
-  async create(@Body() movie: MovieDto): Promise<Movie> {
-    return this.movieService.create(movie);
+  async save(@Body() movie: MovieDto): Promise<Movie> {
+    return this.movieService.save(movie, movie._id);
   }
 
   @Get()
@@ -27,17 +26,24 @@ export class MovieController {
     return this.movieService.getAll();
   }
 
+  @Get('pagination')
+  async getMovies(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Query('search') search: string,
+    @Query('sort') sort: string,
+  ) {
+    return this.movieService.getPagination({
+      page: Number(page) || 1,
+      limit: Number(limit) || 10,
+      search,
+      sort,
+    });
+  }
+
   @Get(':slug')
   async getbySlug(@Param('slug') slug: string): Promise<Movie> {
     return this.movieService.getBySlug(slug);
-  }
-
-  @Put(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() movie: MovieDto,
-  ): Promise<Movie> {
-    return this.movieService.update(id, movie);
   }
 
   @Delete(':id')

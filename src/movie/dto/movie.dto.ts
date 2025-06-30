@@ -1,47 +1,47 @@
-import { IsNotEmpty, IsNumber, IsString } from "class-validator"
-import { Episode } from "../schema/movie.schema"
-
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { EpisodeList } from '../schema/movie.schema';
 
 export class MovieDto {
-    @IsNotEmpty()
-    @IsString()
-    readonly title: string
+  _id: string;
 
-    @IsNotEmpty()
-    @IsString()
-    readonly description: string
+  @IsNotEmpty()
+  @IsString()
+  readonly title: string;
 
-    @IsNotEmpty()
-    @IsString()
-    readonly country: string
+  @IsNotEmpty()
+  @IsString()
+  readonly description: string;
 
-    @IsNotEmpty()
-    readonly genres: string[]
+  @IsNotEmpty()
+  @IsString()
+  readonly country: string;
 
-    @IsNotEmpty()
-    readonly actors: string[]
+  @IsNotEmpty()
+  readonly genres: string[];
 
-    @IsNotEmpty()
-    @IsString()
-    readonly url: string
+  @IsNotEmpty()
+  readonly actors: string[];
 
-    @IsNotEmpty()
-    @IsString()
-    readonly thumbnail: string
+  @IsNotEmpty()
+  @IsString()
+  readonly url: string;
 
-    @IsNotEmpty()
-    @IsString()
-    readonly trailerUrl: string
+  @IsNotEmpty()
+  @IsString()
+  readonly thumbnail: string;
 
-    @IsNotEmpty()
-    readonly directors: string[]
+  @IsString()
+  readonly trailerUrl: string;
 
-    @IsNotEmpty()
-    @IsNumber()
-    readonly yearRelease: number
+  @IsNotEmpty()
+  readonly directors: string[];
 
-    readonly listEpisode: Episode
+  @IsNotEmpty()
+  @IsNumber()
+  readonly yearRelease: number;
 
-    @IsNotEmpty()
-    readonly belong: string[]
+  readonly listEpisode: EpisodeList;
+
+  @IsNotEmpty()
+  readonly belong: string[];
 }
