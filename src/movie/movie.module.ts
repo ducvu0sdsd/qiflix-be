@@ -3,7 +3,7 @@ import { MovieController } from './movie.controller';
 import { MovieService } from './movie.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MovieSchema } from './schema/movie.schema';
-import { UserSchema } from 'src/user/schema/user.schema';
+import { UserSchema } from 'src/user/schema/watching.schema';
 
 @Module({
   imports: [

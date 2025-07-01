@@ -2,28 +2,20 @@ import { Module } from '@nestjs/common';
 import { MovieModule } from './movie/movie.module';
 import { CommentModule } from './comment/comment.module';
 import { AccountModule } from './account/account.module';
-import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
-import { AuthMiddleware } from './auth/middlewares/auth.middleware';
-import { MiddlewareConsumer, NestModule } from '@nestjs/common/interfaces'
-import { RequestMethod } from '@nestjs/common/enums'
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EmailModule } from './email/email.module';
-import { UserController } from './user/user.controller';
-import { AccountController } from './account/account.controller';
-import { MovieController } from './movie/movie.controller';
-import { CommentController } from './comment/comment.controller';
 import { SubtitleModule } from './subtitle/subtitle.module';
-import { SubtitleController } from './subtitle/subtitle.controller';
+import { WatchingModule } from './user/watching.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
-      isGlobal: true
+      isGlobal: true,
     }),
     MailerModule.forRoot({
       transport: {
@@ -31,25 +23,24 @@ import { SubtitleController } from './subtitle/subtitle.controller';
         secure: false,
         auth: {
           user: process.env.MAIL_USER,
-          pass: process.env.MAIL_PASSWORD
-        }
+          pass: process.env.MAIL_PASSWORD,
+        },
       },
     }),
     MongooseModule.forRoot(process.env.DB_URI),
     MovieModule,
     CommentModule,
     AccountModule,
-    UserModule,
+    WatchingModule,
     AuthModule,
     JwtModule.register({
-      secret: process.env.SECRET_KEY || process.env.REFRESH_SECRET_KEY || process.env.VERIFY_SERECT_KEY,
+      secret:
+        process.env.SECRET_KEY ||
+        process.env.REFRESH_SECRET_KEY ||
+        process.env.VERIFY_SERECT_KEY,
     }),
     EmailModule,
     SubtitleModule,
   ],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    
-  }
-}
+export class AppModule {}
