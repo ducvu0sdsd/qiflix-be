@@ -1,7 +1,10 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
+import { ObjectId } from 'mongoose';
 
-export class CreateWatchingDto {
+export class WatchingDto {
+  _id: ObjectId;
+
   @IsString()
   @IsNotEmpty()
   movie_id: string;
@@ -19,7 +22,7 @@ export class CreateWatchingDto {
   played: number;
 }
 
-export class UpdateWatchingDto extends PartialType(CreateWatchingDto) {}
+export class UpdateWatchingDto extends PartialType(WatchingDto) {}
 
 export class DeleteWatchingDto {
   @IsString()

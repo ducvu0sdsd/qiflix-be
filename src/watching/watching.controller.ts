@@ -9,7 +9,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { WatchingService } from './watching.service';
-import { CreateWatchingDto, UpdateWatchingDto } from './dto/watching.dto';
+import { WatchingDto, UpdateWatchingDto } from './dto/watching.dto';
 
 @Controller('watching')
 export class WatchingController {
@@ -17,8 +17,8 @@ export class WatchingController {
 
   // POST /watching
   @Post()
-  async create(@Body() dto: CreateWatchingDto) {
-    return this.watchingService.create(dto);
+  async save(@Body() dto: WatchingDto) {
+    return this.watchingService.save(dto);
   }
 
   // GET /watching

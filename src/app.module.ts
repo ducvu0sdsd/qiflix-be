@@ -9,7 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EmailModule } from './email/email.module';
 import { SubtitleModule } from './subtitle/subtitle.module';
-import { WatchingModule } from './user/watching.module';
+import { WatchingModule } from './watching/watching.module';
 
 @Module({
   imports: [

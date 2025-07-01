@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Watching } from './schema/watching.schema';
-import { CreateWatchingDto, UpdateWatchingDto } from './dto/watching.dto';
+import { UpdateWatchingDto, WatchingDto } from './dto/watching.dto';
 
 @Injectable()
 export class WatchingService {
@@ -11,9 +11,16 @@ export class WatchingService {
     private readonly watchingModel: Model<Watching>,
   ) {}
 
-  // Create or Save
-  async create(createDto: CreateWatchingDto): Promise<Watching> {
-    const created = new this.watchingModel(createDto);
+  // Create or Update
+  async save(watching: WatchingDto): Promise<Watching> {
+    const watchingFounded = await this.findByAccountAndMovie(
+      watching.account_id,
+      watching.movie_id,
+    );
+    if (watchingFounded) {
+      return await this.update(watchingFounded._id.toString(), watching);
+    }
+    const created = new this.watchingModel(watching);
     return await created.save();
   }
 

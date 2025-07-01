@@ -1,12 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
-
-export interface WatchingInterface {
-  movie_id: string;
-  indexOfEpisode: number;
-  currentTime: number;
-  process?: number;
-}
+import { Types } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class Watching {
@@ -27,6 +21,8 @@ export class Watching {
   @Prop()
   @IsNumber()
   played: number;
+
+  _id?: Types.ObjectId;
 }
 
 export const WatchingSchema = SchemaFactory.createForClass(Watching);

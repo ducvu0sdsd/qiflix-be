@@ -37,7 +37,7 @@ export class Episode {
   @Prop()
   thumbnail: string;
   @Prop()
-  duration: string;
+  duration: number;
   @Prop({ default: 0 })
   like: number;
   @Prop({ default: 0 })
