@@ -30,6 +30,13 @@ export class MovieService {
     return await this.movieSchema.create(movie);
   }
 
+  async findMoviesByIds(ids: string[]): Promise<Movie[]> {
+    return this.movieSchema
+      .find({ _id: { $in: ids } })
+      .lean()
+      .exec();
+  }
+
   async getBySlug(slug: string): Promise<Movie> {
     return await this.movieSchema.findOne({ url: slug }).lean();
   }

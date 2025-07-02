@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 
 export interface CategoryInterface {
   category_id: string;
@@ -94,6 +95,8 @@ export class Movie {
 
   @Prop({ default: [] })
   belong: string[];
+
+  _id?: Types.ObjectId;
 }
 
 export const MovieSchema = SchemaFactory.createForClass(Movie);

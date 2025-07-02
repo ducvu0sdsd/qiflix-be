@@ -3,12 +3,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Watching } from './schema/watching.schema';
 import { UpdateWatchingDto, WatchingDto } from './dto/watching.dto';
+import { MovieService } from 'src/movie/movie.service';
 
 @Injectable()
 export class WatchingService {
   constructor(
     @InjectModel(Watching.name)
     private readonly watchingModel: Model<Watching>,
+    private readonly movieService: MovieService,
   ) {}
 
   // Create or Update
@@ -80,8 +82,21 @@ export class WatchingService {
     return { deleted: result.deletedCount > 0 };
   }
 
-  // 🆕 Find all watchings by account_id
-  async findWatchingsByAccount(accountId: string): Promise<Watching[]> {
-    return await this.watchingModel.find({ account_id: accountId }).exec();
+  async findWatchingsByAccount(accountId: string): Promise<any[]> {
+    const watchings = await this.watchingModel
+      .find({ account_id: accountId })
+      .lean();
+
+    const movieIds = watchings.map((w) => w.movie_id);
+    const movies = await this.movieService.findMoviesByIds(movieIds);
+    const movieMap = new Map(
+      movies.map((movie) => [movie._id.toString(), movie]),
+    );
+    const result = watchings.map((w) => ({
+      ...w,
+      movie: movieMap.get(w.movie_id),
+    }));
+
+    return result;
   }
 }
