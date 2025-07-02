@@ -49,11 +49,6 @@ export class WatchingController {
   @Get('account/:accountId')
   async findByAccount(@Param('accountId') accountId: string) {
     const result = await this.watchingService.findWatchingsByAccount(accountId);
-    if (!result || result.length === 0) {
-      throw new NotFoundException(
-        `No watchings found for account_id: ${accountId}`,
-      );
-    }
     return result;
   }
 
