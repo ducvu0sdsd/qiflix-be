@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -7,8 +8,13 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Account, AccountDocument } from './schema/account.schema';
-import { CreateAccountDto, UpdateAccountDto } from './dto/account.dto';
+import {
+  AuthAccountDto,
+  CreateAccountDto,
+  UpdateAccountDto,
+} from './dto/account.dto';
 import * as bcrypt from 'bcrypt';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class AccountService {
@@ -20,12 +26,18 @@ export class AccountService {
   async create(
     createAccountDto: CreateAccountDto,
   ): Promise<Omit<Account, 'password'>> {
+    const existingAccount = await this.accountModel.findOne({
+      email: createAccountDto.email,
+    });
+
+    if (existingAccount) {
+      throw new BadRequestException('Email already exists');
+    }
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(
       createAccountDto.password,
       saltRounds,
     );
-
     const account = new this.accountModel({
       ...createAccountDto,
       password: hashedPassword,
@@ -79,7 +91,7 @@ export class AccountService {
       throw new UnauthorizedException('Invalid password');
     }
 
-    const { password, ...restAccount } = account;
+    const { password, ...restAccount } = account.toObject();
 
     return restAccount;
   }

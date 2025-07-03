@@ -6,29 +6,24 @@ import {
   Param,
   Patch,
   Delete,
-  HttpCode,
-  HttpStatus,
+  Req,
 } from '@nestjs/common';
 import { AccountService } from './account.service';
-import {
-  CreateAccountDto,
-  LoginDto,
-  UpdateAccountDto,
-} from './dto/account.dto';
+import { CreateAccountDto, UpdateAccountDto } from './dto/account.dto';
 
 @Controller('accounts')
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
-  @Post('signup')
+  @Post('sign-up')
   async create(@Body() createAccountDto: CreateAccountDto) {
     return this.accountService.create(createAccountDto);
   }
 
-  @Post('login')
-  @HttpCode(HttpStatus.OK)
-  async login(@Body() loginDto: LoginDto) {
-    return this.accountService.verifyAccount(loginDto.email, loginDto.password);
+  @Get('me')
+  async findMe(@Req() req: Request) {
+    const { account_id } = req['account'];
+    return this.accountService.findById(account_id);
   }
 
   @Get(':id')

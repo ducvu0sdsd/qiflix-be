@@ -49,3 +49,8 @@ export class LoginDto {
   @MinLength(6)
   password: string;
 }
+
+export class AuthAccountDto extends CreateAccountDto {
+  accessToken: string;
+  refreshToken: string;
+}
