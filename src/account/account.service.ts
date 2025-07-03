@@ -1,56 +1,86 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Account, StepVerify } from './schema/account.schema';
-import mongoose from 'mongoose';
-import { AccountDto } from './dto/account.dto';
+import { Model } from 'mongoose';
+import { Account, AccountDocument } from './schema/account.schema';
+import { CreateAccountDto, UpdateAccountDto } from './dto/account.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AccountService {
+  constructor(
+    @InjectModel(Account.name)
+    private readonly accountModel: Model<AccountDocument>,
+  ) {}
 
-    constructor(
-        @InjectModel(Account.name)
-        private accountSchema: mongoose.Model<Account>
-    ) { }
+  async create(
+    createAccountDto: CreateAccountDto,
+  ): Promise<Omit<Account, 'password'>> {
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(
+      createAccountDto.password,
+      saltRounds,
+    );
 
-    async findByEmail(email: string): Promise<Account> {
-        return this.accountSchema.findOne({ email })
+    const account = new this.accountModel({
+      ...createAccountDto,
+      password: hashedPassword,
+    });
+
+    const { password, ...restAccount } = await account.save();
+
+    return restAccount;
+  }
+
+  async findById(id: string): Promise<Account> {
+    const account = await this.accountModel.findById(id).exec();
+    if (!account) {
+      throw new NotFoundException(`Account with ID "${id}" not found`);
+    }
+    return account;
+  }
+
+  async update(id: string, updateDto: UpdateAccountDto): Promise<Account> {
+    const updated = await this.accountModel
+      .findByIdAndUpdate(id, updateDto, {
+        new: true,
+      })
+      .exec();
+
+    if (!updated) {
+      throw new NotFoundException(`Account with ID "${id}" not found`);
     }
 
-    async updateAccount(id: string, account: AccountDto): Promise<Account> {
-        return await this.accountSchema.findByIdAndUpdate(id, account, { new: true })
+    return updated;
+  }
+
+  async remove(id: string): Promise<void> {
+    const result = await this.accountModel.findByIdAndDelete(id).exec();
+    if (!result) {
+      throw new NotFoundException(`Account with ID "${id}" not found`);
+    }
+  }
+
+  async verifyAccount(
+    email: string,
+    pass: string,
+  ): Promise<Omit<Account, 'password'>> {
+    const account = await this.accountModel.findOne({ email }).exec();
+    if (!account) {
+      throw new NotFoundException('Email not found');
     }
 
-    async createAccount(email: string, verify: StepVerify): Promise<Account> {
-        const account = new Account()
-        account.email = email
-        account.verify = verify
-        return await this.accountSchema.create(account)
+    const isMatch = await bcrypt.compare(pass, account.password);
+    if (!isMatch) {
+      throw new UnauthorizedException('Invalid password');
     }
 
-    async updateBasisInformationByID(id: string, account: AccountDto): Promise<Account> {
-        try {
-            const res = await this.accountSchema.findByIdAndUpdate(id, account, {
-                new: true,
-                runValidators: true,
-            })
-            return res
-        } catch (error) {
-            throw new UnauthorizedException(error)
-        }
-    }
+    const { password, ...restAccount } = account;
 
-    async updatePasswordAndAdminByID(id: string, password: string, verify: string): Promise<Account> {
-        try {
-            const salt: number = 10
-            const hash = await bcrypt.hash(password, salt)
-            const res = await this.accountSchema.findByIdAndUpdate(id, { password: hash, verify, admin: false }, {
-                new: true,
-                runValidators: true,
-            })
-            return res
-        } catch (error) {
-            throw new UnauthorizedException(error)
-        }
-    }
+    return restAccount;
+  }
 }

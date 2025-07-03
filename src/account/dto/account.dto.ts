@@ -1,23 +1,51 @@
-import { IsNotEmpty, IsString, IsBoolean, IsEnum } from "class-validator"
-import { StepVerify } from "../schema/account.schema"
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
+import { StepVerify } from '../schema/account.schema';
+import { PartialType } from '@nestjs/mapped-types';
 
+export class CreateAccountDto {
+  @IsEmail()
+  email: string;
 
-export class AccountDto {
+  @IsString()
+  @MinLength(6)
+  password: string;
 
-    @IsNotEmpty()
-    @IsString()
-    readonly fullname: string
+  @IsString()
+  @IsNotEmpty()
+  fullName: string;
 
-    @IsNotEmpty()
-    @IsString()
-    readonly phone: string
+  @IsOptional()
+  @IsString()
+  avatar?: string;
 
-    @IsNotEmpty()
-    @IsString()
-    readonly address: string
+  @IsOptional()
+  @IsString()
+  phone?: string;
 
-    @IsNotEmpty()
-    @IsEnum(StepVerify)
-    readonly verify: StepVerify
+  @IsOptional()
+  @IsString()
+  address?: string;
 
+  @IsOptional()
+  verify?: StepVerify;
+
+  @IsOptional()
+  admin?: boolean;
+}
+
+export class UpdateAccountDto extends PartialType(CreateAccountDto) {}
+
+export class LoginDto {
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  @MinLength(6)
+  password: string;
 }

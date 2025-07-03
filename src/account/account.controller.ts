@@ -1,28 +1,49 @@
-import { Body, Controller, Get, Param, Put, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Param,
+  Patch,
+  Delete,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { AccountService } from './account.service';
-import { Account } from './schema/account.schema';
-import { AccountDto } from './dto/account.dto';
+import {
+  CreateAccountDto,
+  LoginDto,
+  UpdateAccountDto,
+} from './dto/account.dto';
 
 @Controller('accounts')
 export class AccountController {
+  constructor(private readonly accountService: AccountService) {}
 
-    constructor(
-        private accountService: AccountService
-    ) { }
+  @Post('signup')
+  async create(@Body() createAccountDto: CreateAccountDto) {
+    return this.accountService.create(createAccountDto);
+  }
 
-    @Get('get-by-email/:email')
-    async findByEmail(@Param('email') email: string): Promise<Account> {
-        return this.accountService.findByEmail(email)
-    }
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  async login(@Body() loginDto: LoginDto) {
+    return this.accountService.verifyAccount(loginDto.email, loginDto.password);
+  }
 
-    @Get('get-by-email')
-    async getByEmail(@Req() req: Request): Promise<Account> {
-        const decodedToken = (req as any).decodedToken;
-        return this.accountService.findByEmail(decodedToken.email)
-    }
+  @Get(':id')
+  async findById(@Param('id') id: string) {
+    return this.accountService.findById(id);
+  }
 
-    @Put(':id')
-    async updateAccount(@Param('id') id: string, @Body() account: AccountDto): Promise<Account> {
-        return this.accountService.updateAccount(id, account)
-    }
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() updateDto: UpdateAccountDto) {
+    return this.accountService.update(id, updateDto);
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    await this.accountService.remove(id);
+    return { message: 'Account deleted successfully' };
+  }
 }
