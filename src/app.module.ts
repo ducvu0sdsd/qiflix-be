@@ -13,6 +13,7 @@ import { WatchingModule } from './watching/watching.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthMiddleware } from './auth/auth.middleware';
 import { MovieController } from './movie/movie.controller';
+import { VocabularyModule } from './vocabulary/vocabulary.module';
 
 @Module({
   imports: [
@@ -34,8 +35,10 @@ import { MovieController } from './movie/movie.controller';
     MovieModule,
     AccountModule,
     WatchingModule,
+    VocabularyModule,
     AuthModule,
     AuthModule,
+    VocabularyModule,
   ],
 })
 export class AppModule implements NestModule {
